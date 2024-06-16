@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,16 +20,16 @@
 <body id="page-top">
 
   <div id="wrapper">
-    <?php $this->load->view('component/sidebar')?>
+    <?php $this->load->view('component/sidebar') ?>
     <div id="content-wrapper" class="d-flex flex-column">
       <div id="content">
-        <?php $this->load->view('component/header')?>
+        <?php $this->load->view('component/header') ?>
         <div class="container-fluid">
 
           <?php
-            if($this->session->userdata('create')) {
-              echo('<button class="btn btn-success" onclick="add_unit()"><i class="glyphicon glyphicon-plus"></i>Tambah</button><br><br>');
-            }
+          if ($this->session->userdata('create')) {
+            echo ('<button class="btn btn-success" onclick="add_unit()"><i class="glyphicon glyphicon-plus"></i>Tambah</button><br><br>');
+          }
           ?>
 
           <table id="tabelBarang" class="table table-striped table-bordered nowrap text-center" style="width:100%">
@@ -44,10 +45,10 @@
           </table>
         </div>
       </div>
-      <?php $this->load->view('component/footer')?>
+      <?php $this->load->view('component/footer') ?>
     </div>
   </div>
-  
+
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
@@ -65,7 +66,7 @@
 
   <script>
     var table;
-    $(document).ready(function(){
+    $(document).ready(function() {
       $("body").toggleClass("sidebar-toggled");
       $(".sidebar").toggleClass("toggled");
       find_unit();
@@ -73,37 +74,35 @@
 
     function find_unit() {
       table = $('#tabelBarang').DataTable({
-        "columnDefs": [
-          {
-            "targets": [1, 2],
-            "orderable": false,
-          },
-        ],
+        "columnDefs": [{
+          "targets": [1, 2],
+          "orderable": false,
+        }, ],
         "order": [],
-        "serverSide": true, 
+        "serverSide": true,
         "ajax": {
-          "url": "<?= site_url('product_unit/find_units')?>",
+          "url": "<?= site_url('product_unit/find_units') ?>",
           "type": "POST"
         },
         "lengthChange": false,
         "responsive": true,
       });
     }
-    
-    function reload_table(){
+
+    function reload_table() {
       table.ajax.reload(null, false);
     }
-    
-    function add_unit(){
+
+    function add_unit() {
       save_method = 'add';
       $('#form_unit')[0].reset();
       $('.modal-title').text('Tambah Jenis');
       $('#modal_unit').modal('show');
     }
-    
-    function edit_unit(id){
+
+    function edit_unit(id) {
       $.ajax({
-        url : "<?= site_url('product_unit/find_unit')?>/" + id,
+        url: "<?= site_url('product_unit/find_unit') ?>/" + id,
         type: "GET",
         dataType: "JSON",
         success: function(data) {
@@ -113,7 +112,7 @@
           $("#unitModalLabel").html("Edit Jenis");
           $('#modal_unit').modal('show');
         },
-        error: function (err) {
+        error: function(err) {
           alert('Error get data from ajax');
         }
       });
@@ -123,15 +122,42 @@
       $('#modal_unit').modal('hide');
     }
 
+    function delete_unit(id) {
+  swal({
+      title: "Apakah anda yakin?",
+      text: "Data yang dihapus tidak dapat dikembalikan!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        $.ajax({
+          url: "<?= site_url('product_unit/delete_unit') ?>/" + id,
+          type: "POST",
+          success: function(data) {
+            swal("Jenis produk telah berhasil dihapus", {
+              icon: "success",
+            });
+            reload_table();
+          },
+          error: function(err) {
+            alert('Error menghapus data');
+          }
+        });
+      }
+    });
+}
+
     function store_unit() {
       var url;
       if (save_method === 'add') {
-        url = "<?= site_url('product_unit/save_unit')?>";
+        url = "<?= site_url('product_unit/save_unit') ?>";
       } else {
-        url = "<?= site_url('product_unit/update_unit')?>";
+        url = "<?= site_url('product_unit/update_unit') ?>";
       }
       $.ajax({
-        url : url,
+        url: url,
         type: "POST",
         data: $('#form_unit').serialize(),
         dataType: "JSON",
@@ -142,7 +168,7 @@
           });
           reload_table();
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
           alert('error');
         }
       });
@@ -164,7 +190,7 @@
               <input type="hidden" class="" id="unit_id" name="unit_id">
               <div class="form-group">
                 <label for="unit" class="col-form-label">Satuan</label>
-                <input type="text" class="form-control" id="unit" name="unit" >
+                <input type="text" class="form-control" id="unit" name="unit">
                 <div class="invalid-feedback"></div>
               </div>
             </form>

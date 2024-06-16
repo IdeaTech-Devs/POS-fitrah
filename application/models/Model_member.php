@@ -80,4 +80,17 @@ class Model_member extends CI_Model
 
 		return $this->db->update($this->table, $data);
 	}
+
+	public function delete_member($id)
+{
+    $this->db->where('member_id', $id);
+    $result = $this->db->delete($this->table);
+    if ($result) {
+        log_message('info', 'Member deleted with ID: ' . $id);
+    } else {
+        log_message('error', 'Error deleting member with ID: ' . $id . '. Error: ' . $this->db->last_query());
+    }
+    return $result;
+}
+
 }

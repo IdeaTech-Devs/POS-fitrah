@@ -20,12 +20,12 @@
 <body id="page-top">
   <div id="wrapper">
 
-  <?php $this->load->view('component/sidebar')?>
-    
+    <?php $this->load->view('component/sidebar') ?>
+
     <div id="content-wrapper" class="d-flex flex-column">
       <div id="content">
 
-        <?php $this->load->view('component/header')?>
+        <?php $this->load->view('component/header') ?>
 
         <div class="container-fluid">
           <div class="row h3">
@@ -56,7 +56,7 @@
               <div id="store_telephone">-</div>
             </div>
             <div class="col-5 mb-3">
-              Deskribsi
+              Deskripsi
             </div>
             <div class="col-7 d-flex">
               <div class="pr-2">:</div>
@@ -65,12 +65,12 @@
           </div>
         </div>
       </div>
-      
-      <?php $this->load->view('component/footer')?>
+
+      <?php $this->load->view('component/footer') ?>
 
     </div>
   </div>
-  
+
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
@@ -85,25 +85,25 @@
   <script>
     function edit_merchant() {
       $.ajax({
-        url : "<?= site_url('merchant/find_merchant') ?>",
+        url: "<?= site_url('merchant/find_merchant') ?>",
         type: "GET",
         dataType: "JSON",
-        success: function(data){
+        success: function(data) {
           $('[name="store_name"]').val(data.merchant_name);
           $('[name="store_address"]').val(data.merchant_address);
           $('[name="store_telephone"]').val(data.merchant_telephone);
           $("#textarea_store_description").val(data.merchant_description);
           $('#modal_store').modal('show');
         },
-        error: function (jqXHR, textStatus, errorThrown){
+        error: function(jqXHR, textStatus, errorThrown) {
           alert('Jaringan eror');
         }
       });
     }
-    
+
     function simpan() {
       $.ajax({
-        url : "<?= site_url('merchant/simpan_data_merchant') ?>",
+        url: "<?= site_url('merchant/simpan_data_merchant') ?>",
         type: "POST",
         data: $('#form').serialize(),
         dataType: "JSON",
@@ -117,7 +117,7 @@
             icon: "success",
           });
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
           alert('eror');
         }
       });
@@ -125,7 +125,7 @@
 
     function find_merchant() {
       $.ajax({
-        url : "<?= site_url('merchant/find_merchant') ?>",
+        url: "<?= site_url('merchant/find_merchant') ?>",
         type: "GET",
         dataType: "JSON",
         success: function(data) {
@@ -135,60 +135,60 @@
           $("#store_description").html(data.merchant_description);
           $('#modal_store').modal('hide');
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
           alert('Jaringan eror');
         }
       });
     }
-    
-    $(document).ready(function(){
+
+    $(document).ready(function() {
       find_merchant();
       $("body").toggleClass("sidebar-toggled");
       $(".sidebar").toggleClass("toggled");
     });
   </script>
-  
+
   <div class="modal fade" id="modal_store" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        </div>
+        <div class="modal-body" id="isiModal">
+          <form id="form">
+            <div class="form-group">
+              <label for="nama_barang" class="col-form-label">Nama toko</label>
+              <input type="text" class="form-control " name="store_name">
+              <div class="invalid-feedback"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="nama_barang" class="col-form-label">Alamat</label>
+              <input type="text" class="form-control " name="store_address">
+              <div class="invalid-feedback"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="nama_barang" class="col-form-label">Telephon</label>
+              <input type="number" class="form-control" name="store_telephone">
+              <div class="invalid-feedback"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="nama_barang" class="col-form-label">Deskripsi Toko</label>
+              <textarea class="form-control" name="textarea_store_description" id="textarea_store_description" rows="3"></textarea>
+              <div class="invalid-feedback"></div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" OnClick="simpan()">Simpan</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+        </div>
       </div>
-      <div class="modal-body" id="isiModal">
-        <form id="form">
-          <div class="form-group">
-            <label for="nama_barang" class="col-form-label">Nama toko</label>
-            <input type="text" class="form-control " name="store_name" >
-            <div class="invalid-feedback"></div>
-          </div>
-          
-          <div class="form-group">
-            <label for="nama_barang" class="col-form-label">Alamat</label>
-            <input type="text" class="form-control " name="store_address" >
-            <div class="invalid-feedback"></div>
-          </div>
-          
-          <div class="form-group">
-            <label for="nama_barang" class="col-form-label">Telephon</label>
-            <input type="number" class="form-control" name="store_telephone" >
-            <div class="invalid-feedback"></div>
-          </div>
-          
-          <div class="form-group">
-            <label for="nama_barang" class="col-form-label">Moto</label>
-            <textarea class="form-control" name="textarea_store_description" id="textarea_store_description" rows="3"></textarea>
-            <div class="invalid-feedback"></div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" OnClick="simpan()">Simpan</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
-      </div>
-    </div>
     </div>
   </div>
-      
+
 </body>
 
 </html>

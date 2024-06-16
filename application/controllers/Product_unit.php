@@ -38,9 +38,12 @@ class Product_unit extends CI_Controller
 			$row    = [];
 			$row[]  = $n;
 			$row[]  = $user->unit;
-			$row[]  = '<button class="btn btn-danger btn-sm" roler="button" onClick="edit_unit(' . "'" . $user->unit_id . "'" . ')">Edit</button>';
+			$row[]  = '<button class="btn btn-warning btn-sm" roler="button" onClick="edit_unit(' . "'" . $user->unit_id . "'" . ')">Edit</button> <button class="btn btn-danger btn-sm" onClick="delete_unit(' . "'" . $user->unit_id . "'" . ')">Delete</button>';
+			// delete button
+
 			$data[] = $row;
 		}
+		
 		$output = [
 			'draw'            => $_POST['draw'],
 			'recordsTotal'    => $this->model_product_unit->count_all(),
@@ -87,5 +90,11 @@ class Product_unit extends CI_Controller
 				'status' => $this->input->post('unit_id'),
 			]
 		);
+	}
+
+	public function delete_unit($id)
+	{
+		$this->model_product_unit->delete_unit($id);
+		echo json_encode(array("status" => TRUE));
 	}
 }

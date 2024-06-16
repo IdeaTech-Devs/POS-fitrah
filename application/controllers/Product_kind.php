@@ -7,11 +7,12 @@ $dotenv->load();
 
 class Product_kind extends CI_Controller
 {
+	
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model('model_product_kind');
-		if (! $this->session->userdata('user_id')) {
+		$this->load->model('Model_product_kind');
+		if (!$this->session->userdata('user_id')) {
 			header('location:' . $_ENV['APP_HOST']);
 		}
 	}
@@ -28,7 +29,7 @@ class Product_kind extends CI_Controller
 
 	public function find_kinds()
 	{
-		$list = $this->model_product_kind->get_kind_datatables();
+		$list = $this->Model_product_kind->get_kind_datatables();
 		$data = [];
 		$no   = $_POST['start'];
 		$n    = 0;
@@ -38,13 +39,13 @@ class Product_kind extends CI_Controller
 			$row    = [];
 			$row[]  = $n;
 			$row[]  = $user->kind_name;
-			$row[]  = '<button class="btn btn-danger btn-sm" roler="button" onClick="edit_kind(' . "'" . $user->kind_id . "'" . ')">Edit</button>';
+			$row[]  = '<button class="btn btn-info btn-sm" onClick="edit_kind(' . "'" . $user->kind_id . "'" . ')">Edit</button> <button class="btn btn-danger btn-sm" onClick="delete_kind(' . "'" . $user->kind_id . "'" . ')">Delete</button>';
 			$data[] = $row;
 		}
 		$output = [
 			'draw'            => $_POST['draw'],
-			'recordsTotal'    => $this->model_product_kind->count_all(),
-			'recordsFiltered' => $this->model_product_kind->count_filtered(),
+			'recordsTotal'    => $this->Model_product_kind->count_all(),
+			'recordsFiltered' => $this->Model_product_kind->count_filtered(),
 			'data'            => $data,
 		];
 		echo json_encode($output);
@@ -52,7 +53,7 @@ class Product_kind extends CI_Controller
 
 	public function find_kind($kind_id)
 	{
-		$res = $this->model_product_kind->find_kind($kind_id);
+		$res = $this->Model_product_kind->find_kind($kind_id);
 		echo json_encode($res);
 	}
 
@@ -61,7 +62,7 @@ class Product_kind extends CI_Controller
 		$data = [
 			'kind_name' => $this->input->post('kind_name'),
 		];
-		$res = $this->model_product_kind->save_kind($data);
+		$res = $this->Model_product_kind->save_kind($data);
 		echo json_encode(
 			[
 				'status' => $res,
@@ -75,11 +76,17 @@ class Product_kind extends CI_Controller
 			'kind_name'  => $this->input->post('kind_name'),
 			'updated_at' => date('Y-m-d h:i:s'),
 		];
-		$res = $this->model_product_kind->update_kind($this->input->post('kind_id'), $data);
+		$res = $this->Model_product_kind->update_kind($this->input->post('kind_id'), $data);
 		echo json_encode(
 			[
 				'status' => $this->input->post('kind_id'),
 			]
 		);
+	}
+
+	public function delete_kind($id)
+	{
+		$this->Model_product_kind->delete_kind($id);
+		echo json_encode(array("status" => TRUE));
 	}
 }

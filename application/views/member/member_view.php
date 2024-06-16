@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,22 +20,22 @@
 <body id="page-top">
 
   <div id="wrapper">
-    <?php $this->load->view('component/sidebar')?>
+    <?php $this->load->view('component/sidebar') ?>
     <div id="content-wrapper" class="d-flex flex-column">
       <div id="content">
-        <?php $this->load->view('component/header')?>
+        <?php $this->load->view('component/header') ?>
         <div class="container-fluid">
 
           <?php
-            if($this->session->userdata('create')) {
-              echo('<button class="btn btn-success" onclick="add_member()"><i class="glyphicon glyphicon-plus"></i>Tambah</button><br><br>');
-            }
+          if ($this->session->userdata('create')) {
+            echo ('<button class="btn btn-success" onclick="add_member()"><i class="glyphicon glyphicon-plus"></i>Tambah</button><br><br>');
+          }
           ?>
 
           <table id="tabelBarang" class="table table-striped table-bordered nowrap text-center" style="width:100%">
             <thead>
               <tr>
-                <th class="text-center">Ko</th>
+                <th class="text-center">no</th>
                 <th>Nama</th>
                 <th>Email</th>
                 <th>Telephone</th>
@@ -47,10 +48,10 @@
           </table>
         </div>
       </div>
-      <?php $this->load->view('component/footer')?>
+      <?php $this->load->view('component/footer') ?>
     </div>
   </div>
-  
+
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
@@ -65,49 +66,58 @@
   <script src="<?php echo base_url() ?>assets/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
   <script src="<?php echo base_url() ?>assets/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
   <script>
     let table;
     let save_method = '';
 
-    $(document).ready(function(){
+    $(document).ready(function() {
       $("body").toggleClass("sidebar-toggled");
       $(".sidebar").toggleClass("toggled");
       find_member();
     });
 
     function find_member() {
-      table = $('#tabelBarang').DataTable({
-        "columnDefs": [
-          {
-            "targets": [1, 2, 3, 4, 5],
-            "orderable": false,
-          },
-        ],
-        "order": [],
-        "serverSide": true, 
-        "ajax": {
-          "url": "<?= site_url('member/find_members')?>",
-          "type": "POST"
-        },
-        "lengthChange": false,
-        "responsive": true,
+  table = $('#tabelBarang').DataTable({
+    "columnDefs": [
+      {
+        "targets": [1, 2, 3, 4, 5],
+        "orderable": false,
+      },
+    ],
+    "order": [],
+    "serverSide": true, 
+    "ajax": {
+      "url": "<?= site_url('member/find_members')?>",
+      "type": "POST"
+    },
+    "lengthChange": false,
+    "responsive": true,
+    "pageLength": 10, // Menampilkan 15 entries per halaman
+    "drawCallback": function(settings) {
+      let api = this.api();
+      let startIndex = api.context[0]._iDisplayStart; // Mendapatkan indeks awal data pada halaman
+      api.column(0).nodes().each(function(cell, i) {
+        cell.innerHTML = startIndex + i + 1; // Mengatur nomor urut berdasarkan indeks awal data
       });
     }
-    
-    function reload_table(){
+  });
+}
+
+    function reload_table() {
       table.ajax.reload(null, false);
     }
 
-    function add_member(){
+    function add_member() {
       save_method = 'add';
       $('#form_member')[0].reset();
       $('.modal-title').text('Tambah Member');
       $('#modal_member').modal('show');
     }
-    
-    function edit_member(id){
+
+    function edit_member(id) {
       $.ajax({
-        url : "<?php echo site_url('member/find_member')?>/" + id,
+        url: "<?php echo site_url('member/find_member') ?>/" + id,
         type: "GET",
         dataType: "JSON",
         success: function(data) {
@@ -120,7 +130,7 @@
           $("#memberModalLabel").html("Edit Member");
           $('#modal_member').modal('show');
         },
-        error: function (err) {
+        error: function(err) {
           alert('Error get data from ajax');
         }
       });
@@ -130,15 +140,48 @@
       $('#modal_member').modal('hide');
     }
 
+    function delete_member(id) {
+  swal({
+      title: "Apakah anda yakin?",
+      text: "Data yang dihapus tidak dapat dikembalikan!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
+      $.ajax({
+        url: "<?= site_url('member/delete_member') ?>/" + id,
+        type: "POST",
+        dataType: "JSON", // Pastikan dataType diatur ke JSON
+        success: function(data) {
+          if (data.status) { // Cek status dari respon
+            swal("Member telah berhasil dihapus", {
+              icon: "success",
+            });
+            reload_table();
+          } else {
+            swal("Error", "Gagal menghapus member", "error");
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          swal("Error", "Gagal menghapus member: " + textStatus, "error");
+        }
+      });
+    }
+  });
+}
+
+
     function store_member() {
       var url;
       if (save_method === 'add') {
-        url = "<?= site_url('member/save_member')?>";
+        url = "<?= site_url('member/save_member') ?>";
       } else {
-        url = "<?= site_url('member/update_member')?>";
+        url = "<?= site_url('member/update_member') ?>";
       }
       $.ajax({
-        url : url,
+        url: url,
         type: "POST",
         data: $('#form_member').serialize(),
         dataType: "JSON",
@@ -149,7 +192,7 @@
           });
           reload_table();
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
           alert('error');
         }
       });
@@ -171,22 +214,22 @@
               <input type="hidden" class="" id="member_id" name="member_id">
               <div class="form-group">
                 <label for="member_name" class="col-form-label">Nama</label>
-                <input type="text" class="form-control" id="member_name" name="member_name" >
+                <input type="text" class="form-control" id="member_name" name="member_name">
                 <div class="invalid-feedback"></div>
               </div>
               <div class="form-group">
                 <label for="member_email" class="col-form-label">Email</label>
-                <input type="text" class="form-control" id="member_email" name="member_email" >
+                <input type="text" class="form-control" id="member_email" name="member_email">
                 <div class="invalid-feedback"></div>
               </div>
               <div class="form-group">
                 <label for="member_telephone" class="col-form-label">Telephone</label>
-                <input type="text" class="form-control" id="member_telephone" name="member_telephone" >
+                <input type="text" class="form-control" id="member_telephone" name="member_telephone">
                 <div class="invalid-feedback"></div>
               </div>
               <div class="form-group">
                 <label for="discount" class="col-form-label">Discount</label>
-                <input type="number" class="form-control" id="discount" name="discount" >
+                <input type="number" class="form-control" id="discount" name="discount">
                 <div class="invalid-feedback"></div>
               </div>
             </form>

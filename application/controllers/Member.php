@@ -41,7 +41,7 @@ class Member extends CI_Controller
 			$row[]  = $user->member_email;
 			$row[]  = $user->member_telephone;
 			$row[]  = $user->discount . ' %';
-			$row[]  = '<button class="btn btn-danger btn-sm" roler="button" onClick="edit_member(' . "'" . $user->member_id . "'" . ')">Edit</button>';
+			$row[]  = '<button class="btn btn-info btn-sm" onClick="edit_member(' . "'" . $user->member_id . "'" . ')">Edit</button> <button class="btn btn-danger btn-sm" onClick="delete_member(' . "'" . $user->member_id . "'" . ')">Delete</button>';
 			$data[] = $row;
 		}
 		$output = [
@@ -91,4 +91,16 @@ class Member extends CI_Controller
 			]
 		);
 	}
+
+	// function delete
+	public function delete_member($id)
+{
+    $result = $this->model_member->delete_member($id);
+    if ($result) {
+        echo json_encode(array("status" => TRUE));
+    } else {
+        echo json_encode(array("status" => FALSE, "error" => "Gagal menghapus data"));
+    }
+}
+
 }

@@ -46,7 +46,8 @@ class User extends CI_Controller
 			} else {
 				$row[] = 'blokir';
 			}
-			$row[]  = '<button class="btn btn-danger" roler="button" onClick="edit_user(' . "'" . $user->user_id . "'" . ')">Edit</button>';
+			$row[]  = '<button class="btn btn-warning" roler="button" onClick="edit_user(' . "'" . $user->user_id . "'" . ')">Edit</button>';
+			// <button class="btn btn-danger" onclick="delete_user(' . "'" . $user->user_id . "'" . ')">Delete</button>
 			$data[] = $row;
 		}
 		$output = [
@@ -76,4 +77,16 @@ class User extends CI_Controller
 		$res = $this->model_user->update_profil($data, $this->input->post('user_id'));
 		echo json_encode($res);
 	}
+
+	public function delete_user($user_id)
+{
+    $result = $this->model_user->delete_user($user_id);
+    if ($result) {
+        echo json_encode(array("status" => TRUE));
+    } else {
+        echo json_encode(array("status" => FALSE, "error" => "Gagal menghapus data"));
+    }
+}
+
+
 }

@@ -53,15 +53,15 @@
       transition: .4s;
     }
 
-    input:checked + .slider {
+    input:checked+.slider {
       background-color: #2196F3;
     }
-    
-    input:focus + .slider {
+
+    input:focus+.slider {
       box-shadow: 0 0 1px #2196F3;
     }
 
-    input:checked + .slider:before {
+    input:checked+.slider:before {
       -webkit-transform: translateX(26px);
       -ms-transform: translateX(26px);
       transform: translateX(26px);
@@ -80,10 +80,10 @@
 <body id="page-top">
 
   <div id="wrapper">
-    <?php $this->load->view('component/sidebar')?>
+    <?php $this->load->view('component/sidebar') ?>
     <div id="content-wrapper" class="d-flex flex-column">
       <div id="content">
-        <?php $this->load->view('component/header')?>
+        <?php $this->load->view('component/header') ?>
         <div class="container-fluid">
           <table id="tabelBarang" class="table table-striped table-bordered nowrap" style="width:100%">
             <thead>
@@ -102,10 +102,10 @@
           </table>
         </div>
       </div>
-      <?php $this->load->view('component/footer')?>
+      <?php $this->load->view('component/footer') ?>
     </div>
   </div>
-  
+
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
@@ -122,7 +122,7 @@
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   <script>
     var table;
-    $(document).ready(function(){
+    $(document).ready(function() {
       $("body").toggleClass("sidebar-toggled");
       $(".sidebar").toggleClass("toggled");
       find_user();
@@ -130,14 +130,12 @@
 
     function find_user() {
       table = $('#tabelBarang').DataTable({
-        "columnDefs": [
-          {
-            "targets": [1, 3, 4, 5],
-            "orderable": false,
-          },
-        ],
+        "columnDefs": [{
+          "targets": [1, 3, 4, 5],
+          "orderable": false,
+        }, ],
         "order": [],
-        "serverSide": true, 
+        "serverSide": true,
         "ajax": {
           "url": "<?= site_url('user/get_data_user') ?>",
           "type": "POST"
@@ -146,17 +144,17 @@
         "responsive": true,
       });
     }
-    
-    function reload_table(){
-      table.ajax.reload(null,false);
+
+    function reload_table() {
+      table.ajax.reload(null, false);
     }
-    
-    function edit_user(id){
+
+    function edit_user(id) {
       $.ajax({
-        url : "<?= site_url('user/find_user_by_id/') ?>" + id,
+        url: "<?= site_url('user/find_user_by_id/') ?>" + id,
         type: "GET",
         dataType: "JSON",
-        success: function(data){
+        success: function(data) {
           $('[name="user_id"]').val(data.user_id);
           $('[name="user_name"]').val(data.user_name);
           $('[name="email"]').val(data.email);
@@ -165,23 +163,57 @@
           $('[name="is_active"]').prop('checked', data.is_active === "1" ? true : false);
           $('#modal_user').modal('show');
         },
-        error: function (jqXHR, textStatus, errorThrown){
+        error: function(jqXHR, textStatus, errorThrown) {
           alert('Jaringan eror');
         }
       });
     }
 
+    function delete_user(id) {
+      swal({
+          title: "Apakah anda yakin?",
+          text: "Data yang dihapus tidak dapat dikembalikan!",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+          if (willDelete) {
+            $.ajax({
+              url: "<?= site_url('user/delete_user') ?>/" + id,
+              type: "POST",
+              dataType: "JSON",
+              success: function(data) {
+                // Pastikan server mengirim status dalam responsnya
+                if (data && data.status) {
+                  swal("User telah berhasil dihapus", {
+                    icon: "success",
+                  });
+                  $('#userTable').DataTable().ajax.reload();
+                } else {
+                  swal("Error", "Gagal menghapus user: server tidak mengembalikan status yang valid", "error");
+                }
+              },
+              error: function(jqXHR, textStatus, errorThrown) {
+                // Tampilkan pesan kesalahan yang lebih rinci
+                swal("Error", "Gagal menghapus user: " + textStatus + " - " + errorThrown, "error");
+              }
+            });
+          }
+        });
+    }
+
     function update_user(id) {
       let isActive = document.getElementsByName("is_active");
       $.ajax({
-        url : "<?= site_url('user/update_user_by_id') ?>",
+        url: "<?= site_url('user/update_user_by_id') ?>",
         type: "POST",
         data: {
           user_id: $('[name="user_id"]').val(),
           user_name: $('[name="user_name"]').val(),
-			    email: $('[name="email"]').val(),
-			    telephone: $('[name="telephone"]').val(),
-			    gender: $('[name="gender"]').val(),
+          email: $('[name="email"]').val(),
+          telephone: $('[name="telephone"]').val(),
+          gender: $('[name="gender"]').val(),
           is_active: isActive.checked ? 1 : 0,
         },
         dataType: "JSON",
@@ -192,22 +224,22 @@
           });
           reload_table();
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
           alert('error');
         }
       });
     }
   </script>
   <div class="modal fade" id="modal_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				
-			  <div class="modal-header">
-				 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			  </div>
-			
-			  <div class="modal-body">
-				
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        </div>
+
+        <div class="modal-body">
+
           <form id="form">
             <input type="hidden" name="user_id">
 
@@ -223,19 +255,19 @@
               <input type="text" class="form-control" name="user_name">
               <div class="invalid-feedback"></div>
             </div>
-            
+
             <div class="form-group">
               <label for="email" class="col-form-label">Email</label>
               <input type="text" class="form-control" name="email">
               <div class="invalid-feedback"></div>
             </div>
-            
+
             <div class="form-group">
               <label for="telephone" class="col-form-label">Telephon</label>
               <input type="number" class="form-control" name="telephone">
               <div class="invalid-feedback"></div>
             </div>
-            
+
             <div class="form-group">
               <label for="gender" class="col-form-label">Jenis kelamin</label>
               <select class="form-control" name="gender">
@@ -246,16 +278,16 @@
             </div>
 
           </form>
-				
-			  </div>
-			
-			  <div class="modal-footer">
+
+        </div>
+
+        <div class="modal-footer">
           <button type="button" class="btn btn-success" OnClick="update_user()">Simpan</button>
           <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
-				</div>
-			</div>
-		</div>
-	</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

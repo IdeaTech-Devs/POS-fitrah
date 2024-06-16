@@ -9,6 +9,7 @@ class Model_product_kind extends CI_Model
 	public $column_search = ['kind_name'];
 	public $order         = ['kind_id' => 'desc'];
 
+
 	public function get_kind_datatables()
 	{
 		$this->_get_datatables_query();
@@ -87,5 +88,10 @@ class Model_product_kind extends CI_Model
 		$this->db->where('kind_id', $kind_id);
 
 		return $this->db->update($this->table, $data);
+	}
+
+	public function delete_kind($id) {
+		$this->db->where('kind_id', $id);
+		$this->db->delete($this->table);
 	}
 }

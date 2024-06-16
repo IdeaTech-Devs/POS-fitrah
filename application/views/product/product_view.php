@@ -181,6 +181,7 @@
       });
     }
 
+
     function tanggal() {
       $('[data-toggle="mulai_promo"]').datepicker({
         dateFormat: "yy-mm-dd",
@@ -286,7 +287,7 @@
               <div class="col-sm-12 col-lg-6 col-xl-6">
 
                 <div class="form-group">
-                  <label for="barcode" class="col-form-label">Barcode</label>
+                  <label for="barcode" class="col-form-label">Barcode (13 digit)</label>
                   <input type="text" class="form-control" id="barcode" name="barcode" >
                   <div class="invalid-feedback"></div>
                 </div>

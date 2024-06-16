@@ -105,7 +105,7 @@
                 <div class="form-group row">
                   <label class="col-md-3 col-form-label">Bayar</label>
                   <div class="col-md-9">
-                    <input class="form-control form-control-lg res" type="number" id="bayar" name="bayar" onkeyup="showKembali(this.value)" placeholder="0">
+                    <input class="form-control form-control-lg res" type="number" id="bayar" name="bayar" onkeyup="showKembali(Math.max(this.value, 0))" placeholder="0">
                   </div>
                 </div>
 

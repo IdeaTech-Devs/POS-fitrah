@@ -1,5 +1,7 @@
 <?php
 
+
+// define('ENVIRONMENT', 'development');
 defined('BASEPATH') || exit('No direct script access allowed');
 class Model_user extends CI_Model
 {
@@ -144,5 +146,18 @@ class Model_user extends CI_Model
 	{
 		$query = $this->db->query('select count(*) as total from users where role != "admin" ');
 		return $query->row()->total;
+	}
+
+	// delete user
+	public function delete_user($id)
+	{
+		$this->db->where('user_id', $id);
+		if (!$this->db->delete($this->table)) {
+			// Print the last query and error message
+			echo "Last query: " . $this->db->last_query();
+			echo "Error message: " . $this->db->error()['message'];
+			return false;
+		}
+		return true;
 	}
 }
